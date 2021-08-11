@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: MainScreen.routeName,
+      initialRoute:
+          FirebaseAuth.instance.currentUser != null ? LogInScreen.routeName : MainScreen.routeName,
       routes: customRoutes,
     );
   }

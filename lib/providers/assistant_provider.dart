@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uber_clone/models/address.dart';
 import 'package:flutter_uber_clone/models/direction_detail.dart';
+import 'package:flutter_uber_clone/models/user.dart';
 import 'package:flutter_uber_clone/providers/main_provider.dart';
 import 'package:flutter_uber_clone/services/assistant_service.dart';
 import 'package:flutter_uber_clone/utils/secret.dart';
@@ -12,6 +15,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AssistantProvider extends MainProvider {
   AssistantService _assistantService = AssistantService();
   Address? pickUpLocation, dropOffLocation;
+
+  User? firebaseUser;
+
+  UserFormData _userCurrentInfo = UserFormData();
+  UserFormData get userCurrentInfo => _userCurrentInfo;
+  set userCurrentInfo(UserFormData newUserCurrentInfo) {
+    _userCurrentInfo = newUserCurrentInfo;
+    notifyListeners();
+  }
 
   Future<String> searchCoordinateAddress(Position position) async {
     String placeAddress = '';
@@ -76,6 +88,42 @@ class AssistantProvider extends MainProvider {
       directionDetail.durationValue = res['routes'][0]['legs'][0]['duration']['value'].toString();
     }
     return directionDetail;
+  }
+
+  double calculateFares(DirectionDetail directionDetail) {
+    double timeTravelFare = (double.parse('${directionDetail.durationValue}') / 60) * 2.79;
+    double distanceTravelFare = (double.parse('${directionDetail.distanceValue}') / 1000) * 12.09;
+
+    double total = timeTravelFare + distanceTravelFare;
+    var totalFareAmount = double.parse(total.toStringAsPrecision(2));
+    if (totalFareAmount <= 40.0) {
+      totalFareAmount = 40.0;
+    }
+    // print('before: ${directionDetail.durationValue}');
+    // print((double.parse('${directionDetail.durationValue}') / 60).toString());
+    // print((double.parse('${directionDetail.distanceValue}') / 1000).toString());
+    return totalFareAmount;
+  }
+
+  // int calculateEstimateTime(DirectionDetail directionDetail) {
+  //   var durationValue = int.parse('${directionDetail.durationValue}') / 60;
+
+  //   var estimateTime = durationValue.toStringAsPrecision(2);
+  //   var estimateTimeDouble = int.parse('$estimateTime');
+  //   return estimateTimeDouble;
+  // }
+
+  void getCurrentOnlineUserInfo() async {
+    firebaseUser = FirebaseAuth.instance.currentUser;
+    String userId = firebaseUser!.uid;
+    DatabaseReference reference =
+        FirebaseDatabase.instance.reference().child('users').child(userId);
+
+    reference.once().then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        userCurrentInfo = UserFormData.fromSnapshot(dataSnapshot);
+      }
+    });
   }
 }
 

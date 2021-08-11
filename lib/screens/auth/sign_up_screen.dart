@@ -151,7 +151,7 @@ class SignUpScreenState extends State<SignUpScreen> {
           validator: (value) {
             if (value!.isEmpty) {
               return 'Required';
-            } else if (userData.password.length < 6) {
+            } else if (userData.password!.length < 6) {
               return 'Too short';
             }
             return null;

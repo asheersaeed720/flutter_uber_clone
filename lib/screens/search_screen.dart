@@ -160,17 +160,19 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             SizedBox(height: 10.0),
             (placePredictionList.length > 0)
-                ? Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: ListView.separated(
-                      padding: EdgeInsets.all(0),
-                      itemBuilder: (context, i) {
-                        return PredictionTile(placePrediction: placePredictionList[i]);
-                      },
-                      separatorBuilder: (context, int index) => DividerWidget(),
-                      itemCount: placePredictionList.length,
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
+                ? Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      child: ListView.separated(
+                        padding: EdgeInsets.all(0),
+                        itemBuilder: (context, i) {
+                          return PredictionTile(placePrediction: placePredictionList[i]);
+                        },
+                        separatorBuilder: (context, int index) => DividerWidget(),
+                        itemCount: placePredictionList.length,
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                      ),
                     ),
                   )
                 : Container()
@@ -218,43 +220,59 @@ class _PredictionTileState extends State<PredictionTile> {
     return Consumer(
       builder: (context, watch, _) {
         final assitantPvd = watch(assitantProvider);
-        return TextButton(
-          onPressed: () {
+        return ListTile(
+          onTap: () {
             getPlaceAddressDetails(context, '${widget.placePrediction.placeId}', assitantPvd);
           },
-          child: Container(
-            child: Column(
-              children: [
-                const SizedBox(width: 10.0),
-                Row(
-                  children: [
-                    Icon(Icons.add_location),
-                    SizedBox(width: 14.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${widget.placePrediction.mainText}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            '${widget.placePrediction.secondaryText}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12.0, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 10.0),
-              ],
-            ),
+          leading: Icon(Icons.add_location, color: Colors.blueAccent),
+          title: Text(
+            '${widget.placePrediction.mainText}',
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 16.0),
+          ),
+          subtitle: Text(
+            '${widget.placePrediction.secondaryText}',
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12.0, color: Colors.grey),
           ),
         );
+        // return TextButton(
+        //   onPressed: () {
+        //     getPlaceAddressDetails(context, '${widget.placePrediction.placeId}', assitantPvd);
+        //   },
+        //   child: Container(
+        //     child: Column(
+        //       children: [
+        //         const SizedBox(width: 10.0),
+        //         Row(
+        //           children: [
+        //             Icon(Icons.add_location),
+        //             SizedBox(width: 14.0),
+        //             Expanded(
+        //               child: Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Text(
+        //                     '${widget.placePrediction.mainText}',
+        //                     overflow: TextOverflow.ellipsis,
+        //                     style: TextStyle(fontSize: 16.0),
+        //                   ),
+        //                   SizedBox(height: 8.0),
+        //                   Text(
+        //                     '${widget.placePrediction.secondaryText}',
+        //                     overflow: TextOverflow.ellipsis,
+        //                     style: TextStyle(fontSize: 12.0, color: Colors.grey),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //         const SizedBox(width: 10.0),
+        //       ],
+        //     ),
+        //   ),
+        // );
       },
     );
   }

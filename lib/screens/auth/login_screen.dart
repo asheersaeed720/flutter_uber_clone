@@ -8,7 +8,7 @@ import 'package:flutter_uber_clone/widgets/custom_button.dart';
 import 'package:flutter_uber_clone/widgets/loading_indicator.dart';
 
 class LogInScreen extends StatefulWidget {
-  static const String routeName = '/login';
+  static const String routeName = '/';
 
   @override
   _LogInScreenState createState() => _LogInScreenState();
@@ -115,7 +115,7 @@ class _LogInScreenState extends State<LogInScreen> {
           validator: (value) {
             if (value!.isEmpty) {
               return 'Required';
-            } else if (userData.password.length < 6) {
+            } else if (userData.password!.length < 6) {
               return 'Too short';
             }
             return null;

@@ -1,11 +1,15 @@
+import 'package:firebase_database/firebase_database.dart';
+
 class UserFormData {
-  String name;
-  String email;
-  String mobileNo;
-  String password;
-  String confirmPassword;
+  String? id;
+  String? name;
+  String? email;
+  String? mobileNo;
+  String? password;
+  String? confirmPassword;
 
   UserFormData({
+    this.id = '',
     this.name = '',
     this.email = '',
     this.mobileNo = '',
@@ -13,8 +17,15 @@ class UserFormData {
     this.confirmPassword = '',
   });
 
+  UserFormData.fromSnapshot(DataSnapshot dataSnapshot) {
+    id = dataSnapshot.key ?? '';
+    name = dataSnapshot.value['name'];
+    email = dataSnapshot.value['email'];
+    mobileNo = dataSnapshot.value['phone'];
+  }
+
   @override
   String toString() {
-    return 'UserFormData(name: $name, email: $email, mobileNo: $mobileNo, password: $password, confirmPassword: $confirmPassword)';
+    return 'UserFormData(id: $id, name: $name, email: $email, mobileNo: $mobileNo, password: $password, confirmPassword: $confirmPassword)';
   }
 }

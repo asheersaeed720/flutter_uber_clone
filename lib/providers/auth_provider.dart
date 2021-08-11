@@ -30,7 +30,8 @@ class AuthProvider extends MainProvider {
   void loginUser(context) async {
     setBusy(true);
     final User? firebaseUser = (await _firebaseAuth
-            .signInWithEmailAndPassword(email: userFormData.email, password: userFormData.password)
+            .signInWithEmailAndPassword(
+                email: userFormData.email ?? '', password: userFormData.password ?? '')
             .catchError(
       (errMsg) {
         log('$errMsg');
@@ -43,8 +44,11 @@ class AuthProvider extends MainProvider {
     if (firebaseUser != null) {
       userRef.child(firebaseUser.uid).once().then((DataSnapshot snap) {
         if (snap.value != null) {
-          displayToastMessage('Welcome');
           Navigator.of(context).pushNamedAndRemoveUntil(MainScreen.routeName, (route) => false);
+
+          Future.delayed(const Duration(seconds: 1), () {
+            displayToastMessage('Success');
+          });
         } else {
           _firebaseAuth.signOut();
           displayToastMessage('No Record Exist');
@@ -60,7 +64,7 @@ class AuthProvider extends MainProvider {
     setBusy(true);
     final User? firebaseUser = (await _firebaseAuth
             .createUserWithEmailAndPassword(
-                email: userFormData.email, password: userFormData.password)
+                email: userFormData.email ?? '', password: userFormData.password ?? '')
             .catchError(
       (errMsg) {
         log('$errMsg');
@@ -78,7 +82,9 @@ class AuthProvider extends MainProvider {
       };
       userRef.child(firebaseUser.uid).set(userData);
       Navigator.of(context).pushNamedAndRemoveUntil(MainScreen.routeName, (route) => false);
-      displayToastMessage('Congratz');
+      Future.delayed(const Duration(seconds: 1), () {
+        displayToastMessage('Welcome, ${userFormData.name}');
+      });
     } else {
       displayToastMessage('New User has not been created');
     }
