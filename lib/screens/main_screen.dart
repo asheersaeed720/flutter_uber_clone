@@ -64,7 +64,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   void saveRideRequest() {
-    _rideRequestRef = FirebaseDatabase.instance.reference().child('Ride Requests').push();
+    // _rideRequestRef = FirebaseDatabase.instance.reference().child('Ride Requests');  // !If we use push() id auto generated
+    _rideRequestRef = FirebaseDatabase.instance.reference().child('Ride Requests');
     var pickUp = context.read(assitantProvider).pickUpLocation;
     var dropOff = context.read(assitantProvider).dropOffLocation;
     Map pickUpLocation = {
@@ -77,6 +78,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     };
 
     Map rideInfoMap = {
+      'uid': '123214e3e23',
       'driver_id': 'waiting',
       'payment_method': 'cash',
       'pickup': pickUpLocation,
